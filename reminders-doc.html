@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>סמארטבטלר למלונות · תוכנית תזכורות ונוסחי מיילים</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F0F4F8;
+      --paper: #FFFFFF;
+      --ink: #102A38;
+      --ink-light: #5A7184;
+      --border: #DCE5EC;
+      --primary: #0D2838;
+      --accent: #0288D1;
+      --accent-light: #E1F5FE;
+      --card-bg: #F8FAFC;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Assistant', 'Heebo', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      padding: 40px 20px;
+      direction: rtl;
+    }
+    .doc-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--paper);
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(13, 40, 56, 0.08), 0 1px 3px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .doc-header {
+      background: linear-gradient(135deg, #0D2838 0%, #103043 100%);
+      color: white;
+      padding: 36px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 4px solid #4BBDDB;
+    }
+    .doc-header-info h1 {
+      font-family: 'Heebo', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .doc-header-info p {
+      font-size: 16px;
+      color: #9BB2BF;
+    }
+    .doc-logo img {
+      height: 38px;
+      width: auto;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+    }
+    .doc-content {
+      padding: 48px;
+    }
+    .meta-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      background: #F4F8FA;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 24px;
+      margin-bottom: 40px;
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-light);
+      margin-bottom: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .meta-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    h2.section-title {
+      font-family: 'Heebo', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 36px 0 18px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 2px solid #E9EFF4;
+      padding-bottom: 10px;
+    }
+    h2.section-title::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 22px;
+      background: #4BBDDB;
+      border-radius: 3px;
+    }
+
+    /* Schedule Table */
+    .schedule-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-bottom: 40px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      font-size: 15px;
+    }
+    .schedule-table th {
+      background: #103043;
+      color: white;
+      text-align: right;
+      padding: 14px 18px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .schedule-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: white;
+    }
+    .schedule-table tr:last-child td {
+      border-bottom: none;
+    }
+    .schedule-table tr:hover td {
+      background: #F9FCFD;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #E1F5FE;
+      color: #0277BD;
+    }
+
+    /* Email Cards */
+    .email-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 28px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .email-card:hover {
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    }
+    .email-header {
+      background: #F8FAFC;
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .email-header-title {
+      font-family: 'Heebo', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .email-timing {
+      font-size: 13px;
+      font-weight: 600;
+      color: #0277BD;
+      background: #E1F5FE;
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+    .email-fields {
+      padding: 14px 24px;
+      background: #FFFFFF;
+      border-bottom: 1px dashed var(--border);
+      font-size: 14px;
+    }
+    .email-field-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .email-field-row:last-child {
+      margin-bottom: 0;
+    }
+    .email-field-label {
+      font-weight: 700;
+      color: var(--ink-light);
+      min-width: 90px;
+    }
+    .email-field-val {
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .email-body {
+      padding: 24px;
+      background: #FAFBFD;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #243B53;
+      white-space: pre-line;
+      font-family: 'Assistant', sans-serif;
+    }
+    .email-footer {
+      padding: 12px 24px;
+      background: white;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn-copy {
+      background: white;
+      border: 1px solid #B0BEC5;
+      color: var(--primary);
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-copy:hover {
+      background: #0D2838;
+      color: white;
+      border-color: #0D2838;
+    }
+
+    /* Reminders List */
+    .reminders-list {
+      list-style: none;
+      margin-bottom: 30px;
+    }
+    .reminders-list li {
+      padding: 12px 18px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+    }
+    .reminders-list li strong {
+      color: var(--primary);
+      min-width: 140px;
+    }
+    .reminder-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #4BBDDB;
+      color: #0D2838;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* Guide box */
+    .guide-box {
+      background: #F4F8FA;
+      border-right: 4px solid #4BBDDB;
+      padding: 20px 24px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin-top: 20px;
+      font-size: 15px;
+    }
+    .guide-box h4 {
+      font-family: 'Heebo', sans-serif;
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .doc-container { box-shadow: none; border: none; }
+      .btn-copy { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="doc-container">
+  <!-- Header -->
+  <header class="doc-header">
+    <div class="doc-header-info">
+      <h1>תוכנית תזכורות ונוסחי מיילים לשידור</h1>
+      <p>ג'ייבי מערכות בע"מ · סמארטבטלר למלונות</p>
+    </div>
+    <div class="doc-logo">
+      <img src="logo.svg" alt="Jaybee Systems">
+    </div>
+  </header>
+
+  <main class="doc-content">
+    <!-- Meta bar -->
+    <div class="meta-bar">
+      <div class="meta-item">
+        <span class="meta-label">נושא הוובינר</span>
+        <span class="meta-value">הכרת סמארטבטלר מבית ג'ייבי</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">מועד השידור</span>
+        <span class="meta-value">רביעי, 14.10.2026 ב-15:00</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">פלטפורמה</span>
+        <span class="meta-value">Google Meet (60 דק')</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">מסלול ליווי</span>
+        <span class="meta-value">מייל ויומן Google</span>
+      </div>
+    </div>
+
+    <!-- Section 1: Schedule -->
+    <h2 class="section-title">1. לוח זמנים לשילוח תזכורות במייל</h2>
+    <table class="schedule-table">
+      <thead>
+        <tr>
+          <th>תזמון שליחה</th>
+          <th>שם המייל</th>
+          <th>מטרת השליחה</th>
+          <th>ערוץ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>מיד עם ההרשמה</strong></td>
+          <td>אישור הרשמה (welcome)</td>
+          <td>אישור מיידי, 4 נושאי ההדגמה וקישור לשידור</td>
+          <td><span class="badge">מייל אוטומטי</span></td>
+        </tr>
+        <tr>
+          <td><strong>שלישי, 13.10.2026 בשעה 10:00</strong></td>
+          <td>יום לפני (day_before)</td>
+          <td>חידוד הצורך, פתרון הלחץ ב-14:00 והכנה לצפייה</td>
+          <td><span class="badge">מייל מתוזמן</span></td>
+        </tr>
+        <tr>
+          <td><strong>רביעי, 14.10.2026 בשעה 14:00</strong></td>
+          <td>שעה לפני (one_hour_before)</td>
+          <td>תזכורת אחרונה וקישור ישיר ל-Google Meet</td>
+          <td><span class="badge">מייל מתוזמן</span></td>
+        </tr>
+        <tr>
+          <td><strong>רביעי, 14.10.2026 בשעה 15:00</strong></td>
+          <td>התחלנו! (live)</td>
+          <td>שידור פתוח - כניסה מיידית לחדר השידור</td>
+          <td><span class="badge">מייל מיידי</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Section 2: Emails -->
+    <h2 class="section-title">2. נוסחי המיילים המלאים (מוכנים להעתקה)</h2>
+
+    <!-- Email 1 -->
+    <div class="email-card">
+      <div class="email-header">
+        <span class="email-header-title">מייל 1 · אישור הרשמה מיידי (welcome)</span>
+        <span class="email-timing">נשלח מיד עם מילוי הטופס</span>
+      </div>
+      <div class="email-fields">
+        <div class="email-field-row">
+          <span class="email-field-label">נושא:</span>
+          <span class="email-field-val">המקום שלך בשידור סמארטבטלר שמור</span>
+        </div>
+        <div class="email-field-row">
+          <span class="email-field-label">שורת פתיחה:</span>
+          <span class="email-field-val">יום רביעי, 14 באוקטובר בשעה 15:00 ב-Google Meet</span>
+        </div>
+      </div>
+      <div class="email-body" id="email-1-body">שלום,
+
+שמחה גדולה לפגוש אותך. מקומך בשידור החי שמור ומאושר.
+
+⏰ מועד השידור: יום רביעי, 14.10.2026 בשעה 15:00 (משך השידור: 60 דקות).
+השידור יתקיים ב-Google Meet, והקישור האישי שלך מחכה כאן:
+{{BROADCAST_LINK}}
+
+הנה ארבעת הכלים המעשיים שנציג בהדגמה חיה:
+✔️ מודול LogBook: ניהול פניות ואסקלציה אוטומטית ב-3 צעדים
+✔️ מודול HouseKeeping: חלוקת משימות בוקר בדקות וסנכרון PMS
+✔️ מודול Mini-Bar: בדיקה מהירה, מניעת אובדן וחיוב מיידי בצ'ק-אאוט
+✔️ מודול Room Service: תפריט QR דיגיטלי והזמנות ישירות למטבח
+
+מומלץ להוסיף את המועד ליומן כבר עכשיו, כדי להבטיח לעצמך שעה של שקט ולמידה מקצועית.
+
+תזכורת עם הקישור תישלח אליך גם שעה לפני השידור.
+
+להתראות בשידור,
+יוסי</div>
+      <div class="email-footer">
+        <button class="btn-copy" onclick="copyText('email-1-body', this)">📋 העתק נוסח מייל</button>
+      </div>
+    </div>
+
+    <!-- Email 2 -->
+    <div class="email-card">
+      <div class="email-header">
+        <span class="email-header-title">מייל 2 · יום לפני השידור (day_before)</span>
+        <span class="email-timing">יום שלישי 13.10.2026 בשעה 10:00</span>
+      </div>
+      <div class="email-fields">
+        <div class="email-field-row">
+          <span class="email-field-label">נושא:</span>
+          <span class="email-field-val">מחר ב-15:00: סמארטבטלר בשידור חי</span>
+        </div>
+        <div class="email-field-row">
+          <span class="email-field-label">שורת פתיחה:</span>
+          <span class="email-field-val">שעה אחת שמשנה את השגרה התפעולית במלון שלך</span>
+        </div>
+      </div>
+      <div class="email-body" id="email-2-body">שלום,
+
+תזכורת קצרה: מחר, יום רביעי ב-15:00 בדיוק, אנחנו נפגשים בשידור החי של סמארטבטלר מבית ג'ייבי מערכות.
+
+אם מוכר לך מפלס הלחץ של שעה שתיים בצהריים, כשאורחים ממתינים בלובי, חדרים נקיים תקועים ללא אישור, ומכשירי הקשר מרעישים במסדרון - המפגש הזה נבנה בדיוק בשבילך.
+
+נראה צעד-אחר-צעד איך ארבעת המודולים מסנכרנים את המלון בזמן אמת ומייצרים שקט תפעולי אמיתי.
+
+⏰ מתי: מחר, רביעי 14.10.2026 בשעה 15:00 (60 דקות)
+הקישור הישיר לשידור ב-Google Meet:
+{{BROADCAST_LINK}}
+
+כדאי להכין כלי כתיבה ולהתחבר ממחשב נייח או נייד לחוויית צפייה נוחה ומלאה.
+
+נתראה מחר,
+יוסי</div>
+      <div class="email-footer">
+        <button class="btn-copy" onclick="copyText('email-2-body', this)">📋 העתק נוסח מייל</button>
+      </div>
+    </div>
+
+    <!-- Email 3 -->
+    <div class="email-card">
+      <div class="email-header">
+        <span class="email-header-title">מייל 3 · שעה לפני השידור (one_hour_before)</span>
+        <span class="email-timing">יום רביעי 14.10.2026 בשעה 14:00</span>
+      </div>
+      <div class="email-fields">
+        <div class="email-field-row">
+          <span class="email-field-label">נושא:</span>
+          <span class="email-field-val">מתחילים בעוד שעה: סמארטבטלר למלונות</span>
+        </div>
+        <div class="email-field-row">
+          <span class="email-field-label">שורת פתיחה:</span>
+          <span class="email-field-val">הקישור ל-Google Meet מחכה לך בפנים</span>
+        </div>
+      </div>
+      <div class="email-body" id="email-3-body">שלום,
+
+השידור החי המיוחד שלנו על סמארטבטלר למלונות מתחיל בעוד שעה בדיוק, בשעה 15:00.
+
+נפתח בדיוק בזמן עם הדגמה חיה ומעשית של ארבעת המודולים התפעוליים וחיבור ה-PMS.
+
+הקישור הישיר לכניסה לחדר ב-Google Meet:
+{{BROADCAST_LINK}}
+
+מומלץ להתחבר כמה דקות קודם כדי לוודא שמע ווידאו תקינים.
+
+מחכה לפגוש אותך בעוד שעה,
+יוסי</div>
+      <div class="email-footer">
+        <button class="btn-copy" onclick="copyText('email-3-body', this)">📋 העתק נוסח מייל</button>
+      </div>
+    </div>
+
+    <!-- Email 4 -->
+    <div class="email-card">
+      <div class="email-header">
+        <span class="email-header-title">מייל 4 · פתיחת השידור ("התחלנו!") (live)</span>
+        <span class="email-timing">יום רביעי 14.10.2026 בשעה 15:00 בדיוק</span>
+      </div>
+      <div class="email-fields">
+        <div class="email-field-row">
+          <span class="email-field-label">נושא:</span>
+          <span class="email-field-val">התחלנו! כניסה לשידור סמארטבטלר</span>
+        </div>
+        <div class="email-field-row">
+          <span class="email-field-label">שורת פתיחה:</span>
+          <span class="email-field-val">השידור החי ב-Google Meet נפתח עכשיו</span>
+        </div>
+      </div>
+      <div class="email-body" id="email-4-body">שלום,
+
+אנחנו באוויר! השידור החי של סמארטבטלר נפתח ממש ברגעים אלה.
+
+לכניסה ישירה לחדר ב-Google Meet:
+{{BROADCAST_LINK}}
+
+כל מנהלי המלונות כבר מתחברים, מתחילים מיד.
+
+יוסי</div>
+      <div class="email-footer">
+        <button class="btn-copy" onclick="copyText('email-4-body', this)">📋 העתק נוסח מייל</button>
+      </div>
+    </div>
+
+    <!-- Section 3: Reminders for host -->
+    <h2 class="section-title">3. תזכורות מומלצות ליומן לצוות השידור</h2>
+    <ul class="reminders-list">
+      <li>
+        <span class="reminder-num">1</span>
+        <strong>שלישי 13.10 | 09:45</strong>
+        <span>שליחת מייל <code>day_before</code> ("מחר ב-15:00") לרשימת הנרשמים.</span>
+      </li>
+      <li>
+        <span class="reminder-num">2</span>
+        <strong>רביעי 14.10 | 13:45</strong>
+        <span>שליחת מייל <code>one_hour_before</code> ("מתחילים בעוד שעה") לרשימה.</span>
+      </li>
+      <li>
+        <span class="reminder-num">3</span>
+        <strong>רביעי 14.10 | 14:45</strong>
+        <span>כניסה מוקדמת לחדר Google Meet, בדיקת שמע, מצגת וחיבור אינטרנט.</span>
+      </li>
+      <li>
+        <span class="reminder-num">4</span>
+        <strong>רביעי 14.10 | 15:00</strong>
+        <span>שליחת מייל <code>live</code> ("התחלנו!") ופתיחת השידור.</span>
+      </li>
+    </ul>
+
+    <div class="guide-box">
+      <h4>💡 הנחיית תפעול:</h4>
+      <p>ניתן להעתיק את רשימת הנרשמים מלוח הניהול בכל עת, ולשלוח דרך כל מערכת דיוור (רב-מסר, שלח מסר, Mailchimp וכו') או ישירות מ-Gmail בשורת עותק מוסתר (BCC) עם תזמון שליחה מראש.</p>
+    </div>
+
+  </main>
+</div>
+
+<script>
+function copyText(elemId, btn) {
+  var text = document.getElementById(elemId).innerText;
+  navigator.clipboard.writeText(text).then(function() {
+    var orig = btn.innerText;
+    btn.innerText = '✅ הועתק בהצלחה!';
+    btn.style.background = '#E8F5E9';
+    btn.style.borderColor = '#4CAF50';
+    btn.style.color = '#2E7D32';
+    setTimeout(function() {
+      btn.innerText = orig;
+      btn.style.background = '';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }, 2500);
+  });
+}
+</script>
+</body>
+</html>

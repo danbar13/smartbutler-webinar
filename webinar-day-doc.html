@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>סמארטבטלר למלונות · תיק יום השידור וסיכום ביצועים</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F0F4F8;
+      --paper: #FFFFFF;
+      --ink: #102A38;
+      --ink-light: #5A7184;
+      --border: #DCE5EC;
+      --primary: #0D2838;
+      --accent: #4BBDDB;
+      --accent-dark: #0288D1;
+      --card-bg: #F8FAFC;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Assistant', 'Heebo', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      padding: 40px 20px;
+      direction: rtl;
+    }
+    .doc-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--paper);
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(13, 40, 56, 0.08), 0 1px 3px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .doc-header {
+      background: linear-gradient(135deg, #0D2838 0%, #103043 100%);
+      color: white;
+      padding: 36px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 4px solid var(--accent);
+    }
+    .doc-header-info h1 {
+      font-family: 'Heebo', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .doc-header-info p {
+      font-size: 16px;
+      color: #9BB2BF;
+    }
+    .doc-logo img {
+      height: 38px;
+      width: auto;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+    }
+    .doc-content {
+      padding: 48px;
+    }
+    .meta-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      background: #F4F8FA;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 24px;
+      margin-bottom: 40px;
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-light);
+      margin-bottom: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .meta-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    h2.section-title {
+      font-family: 'Heebo', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 36px 0 18px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 2px solid #E9EFF4;
+      padding-bottom: 10px;
+    }
+    h2.section-title::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 22px;
+      background: var(--accent);
+      border-radius: 3px;
+    }
+
+    /* Cards & Steps */
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+    }
+    .step-list {
+      list-style: none;
+      counter-reset: step-counter;
+    }
+    .step-item {
+      position: relative;
+      padding-right: 48px;
+      margin-bottom: 18px;
+      font-size: 15px;
+    }
+    .step-item:last-child { margin-bottom: 0; }
+    .step-item::before {
+      content: counter(step-counter);
+      counter-increment: step-counter;
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #E1F5FE;
+      color: var(--accent-dark);
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .step-item strong {
+      display: block;
+      color: var(--primary);
+      font-size: 16px;
+      margin-bottom: 4px;
+      font-family: 'Heebo', sans-serif;
+    }
+
+    /* Checklist */
+    .checklist {
+      list-style: none;
+      margin-bottom: 30px;
+    }
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 14px 18px;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      transition: all 0.2s;
+    }
+    .checklist-item:hover {
+      border-color: #B0BEC5;
+      background: #F9FCFD;
+    }
+    .checklist-item.checked {
+      background: #F1F8E9;
+      border-color: #C8E6C9;
+    }
+    .checklist-item.checked .checklist-text {
+      text-decoration: line-through;
+      color: #78909C;
+    }
+    .checklist-time {
+      background: #103043;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+      direction: ltr;
+    }
+    .checklist-checkbox {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      accent-color: #0D2838;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .checklist-text {
+      font-size: 15px;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    /* Message Box */
+    .message-box {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+    .message-header {
+      background: #103043;
+      color: white;
+      padding: 12px 20px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .message-body {
+      padding: 20px 24px;
+      font-family: 'Assistant', sans-serif;
+      white-space: pre-line;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #243B53;
+      background: #FAFBFD;
+    }
+    .message-actions {
+      padding: 10px 20px;
+      background: white;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn-copy {
+      background: white;
+      border: 1px solid #B0BEC5;
+      color: var(--primary);
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-copy:hover {
+      background: #0D2838;
+      color: white;
+      border-color: #0D2838;
+    }
+
+    /* Table */
+    .metrics-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-bottom: 30px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      font-size: 15px;
+    }
+    .metrics-table th {
+      background: #103043;
+      color: white;
+      text-align: right;
+      padding: 14px 18px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .metrics-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: white;
+    }
+    .metrics-table tr:last-child td { border-bottom: none; }
+    .metrics-table input {
+      width: 100%;
+      padding: 6px 12px;
+      border: 1px solid #CFD8DC;
+      border-radius: 6px;
+      font-size: 14px;
+      text-align: center;
+      font-weight: 700;
+      font-family: inherit;
+    }
+
+    /* Callout */
+    .callout {
+      background: #F4F8FA;
+      border-right: 4px solid var(--accent);
+      padding: 18px 24px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin: 24px 0;
+      font-size: 15px;
+    }
+    .callout h4 {
+      font-family: 'Heebo', sans-serif;
+      font-size: 16px;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .doc-container { box-shadow: none; border: none; }
+      .btn-copy { display: none; }
+      .checklist-item { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="doc-container">
+  <!-- Header -->
+  <header class="doc-header">
+    <div class="doc-header-info">
+      <h1>תיק יום השידור ומדדי ביצוע</h1>
+      <p>ג'ייבי מערכות בע"מ · סמארטבטלר למלונות</p>
+    </div>
+    <div class="doc-logo">
+      <img src="logo.svg" alt="Jaybee Systems">
+    </div>
+  </header>
+
+  <main class="doc-content">
+    <!-- Meta bar -->
+    <div class="meta-bar">
+      <div class="meta-item">
+        <span class="meta-label">נושא השידור</span>
+        <span class="meta-value">הכרת סמארטבטלר מבית ג'ייבי</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">מועד ומזג השידור</span>
+        <span class="meta-value">רביעי, 14.10.2026 ב-15:00</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">פלטפורמה</span>
+        <span class="meta-value">Google Meet (60 דקות)</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">מעביר הוובינר</span>
+        <span class="meta-value">יוסי רון, מנכ"ל ובעלים</span>
+      </div>
+    </div>
+
+    <!-- Section 1: Setup Google Meet -->
+    <h2 class="section-title">1. הגדרות הקמת החדר ב-Google Meet</h2>
+    <div class="card">
+      <ol class="step-list">
+        <li class="step-item">
+          <strong>פתיחת הפגישה ב-Google Calendar / Meet</strong>
+          נכנסים לחשבון ה-Google Workspace של החברה, בוחרים <em>פגישה חדשה</em> ⬅ <em>תזמון ב-Google Calendar</em>.
+        </li>
+        <li class="step-item">
+          <strong>הגדרת זמנים וכותרת</strong>
+          כותרת: <code>סמארטבטלר למלונות: שליטה תפעולית בכל מודול</code>. מועד: יום רביעי 14.10.2026, שעה 15:00 עד 16:15 (מומלץ לשריין 75 דקות).
+        </li>
+        <li class="step-item">
+          <strong>הגדרות מארח (Host controls)</strong>
+          לוחצים על גלגל השיניים בהגדרות ה-Meet:
+          <br>• שיתוף מסך למשתתפים: <strong>כבוי</strong> (רק יוסי/המארח משתפים).
+          <br>• צ'אט (Send chat messages): <strong>פתוח</strong> לכולם לשאלות.
+          <br>• מיקרופון למשתתפים: <strong>השתקה בהצטרפות</strong> (Mute upon entry).
+        </li>
+        <li class="step-item">
+          <strong>הפעלת הקלטה בענן (Recording)</strong>
+          מוודאים שלחשבון יש הרשאת הקלטה (Google Workspace Business/Enterprise). בעלייה לשידור לוחצים על כפתור <em>Record meeting</em> לשמירה אוטומטית ב-Google Drive.
+        </li>
+        <li class="step-item">
+          <strong>שמירת הקישור לשידור</strong>
+          מעתיקים את הקישור לחדר (למשל: <code>https://meet.google.com/xyz-abcd-efg</code>) ומדביקים אותו במיילים ובלוח הזמנים.
+        </li>
+      </ol>
+    </div>
+
+    <!-- Section 2: Checklist -->
+    <h2 class="section-title">2. צ'קליסט תפעולי ליום השידור (אינטראקטיבי)</h2>
+    <p style="font-size:14px; color:var(--ink-light); margin-bottom:14px;">ניתן לסמן V בכל שלב שמבוצע:</p>
+    
+    <ul class="checklist">
+      <li class="checklist-item">
+        <input type="checkbox" class="checklist-checkbox" onchange="toggleCheck(this)">
+        <span class="checklist-time">14:40</span>
+        <div class="checklist-text">
+          <strong>כניסה מוקדמת לחדר Google Meet:</strong> בדיקת מצלמה, תאורה מול הפנים, איכות המיקרופון, וחיבור אינטרנט קווי או יציב.
+        </div>
+      </li>
+      <li class="checklist-item">
+        <input type="checkbox" class="checklist-checkbox" onchange="toggleCheck(this)">
+        <span class="checklist-time">14:45</span>
+        <div class="checklist-text">
+          <strong>הכנת המצגת:</strong> פתיחת <code>deck.html</code> בכרום, לחיצה על מקש <code>F</code> למסך מלא (שקף 1 מוצג). שיתוף מסך: <strong>חלון הדפדפן בלבד</strong> (ולא כל שולחן העבודה).
+        </div>
+      </li>
+      <li class="checklist-item">
+        <input type="checkbox" class="checklist-checkbox" onchange="toggleCheck(this)">
+        <span class="checklist-time">14:48</span>
+        <div class="checklist-text">
+          <strong>פתיחת התסריט:</strong> קובץ <code>script.md</code> פתוח במסך שני, בטאבלט או מודפס בצד לנוחות מרבית.
+        </div>
+      </li>
+      <li class="checklist-item">
+        <input type="checkbox" class="checklist-checkbox" onchange="toggleCheck(this)">
+        <span class="checklist-time">14:50</span>
+        <div class="checklist-text">
+          <strong>אימות תזכורת:</strong> מייל <code>one_hour_before</code> נשלח ב-14:00. בדיקה מהטלפון שהקישור נפתח ישירות לחדר ה-Meet.
+        </div>
+      </li>
+      <li class="checklist-item">
+        <input type="checkbox" class="checklist-checkbox" onchange="toggleCheck(this)">
+        <span class="checklist-time">14:52</span>
+        <div class="checklist-text">
+          <strong>שקט תפעולי:</strong> כיבוי כל ההתראות במחשב (מצב נא לא להפריע / Focus assist). השתקה מוחלטת של הטלפון הנייד.
+        </div>
+      </li>
+      <li class="checklist-item">
+        <input type="checkbox" class="checklist-checkbox" onchange="toggleCheck(this)">
+        <span class="checklist-time">14:55</span>
+        <div class="checklist-text">
+          <strong>כוס מים והקלטה:</strong> כוס מים ליד המקלדת. לוחצים <em>Record meeting</em> ב-Google Meet ומוודאים שמופיע חיווי אדום של הקלטה פעילה.
+        </div>
+      </li>
+      <li class="checklist-item">
+        <input type="checkbox" class="checklist-checkbox" onchange="toggleCheck(this)">
+        <span class="checklist-time">14:58</span>
+        <div class="checklist-text">
+          <strong>עמדת זינוק:</strong> שקף 1 של המצגת מוקרן במרכז המסך. נשימה עמוקה, חיוך ומוכנות לפתיחה.
+        </div>
+      </li>
+      <li class="checklist-item">
+        <input type="checkbox" class="checklist-checkbox" onchange="toggleCheck(this)">
+        <span class="checklist-time">15:00</span>
+        <div class="checklist-text">
+          <strong>פתיחת השידור:</strong> שיגור מייל <code>live</code> ("התחלנו!") לרשימת הנרשמים. פותחים מיקרופון ומתחילים בדיוק בזמן!
+        </div>
+      </li>
+      <li class="checklist-item">
+        <input type="checkbox" class="checklist-checkbox" onchange="toggleCheck(this)">
+        <span class="checklist-time">15:05</span>
+        <div class="checklist-text">
+          <strong>אימות קליטה בצ'אט:</strong> שאלת פתיחה קצרה בצ'אט ("כתבו לי שרואים ושומעים מצוין"), וגלישה חלקה לתוך התוכן.
+        </div>
+      </li>
+      <li class="checklist-item">
+        <input type="checkbox" class="checklist-checkbox" onchange="toggleCheck(this)">
+        <span class="checklist-time">16:00</span>
+        <div class="checklist-text">
+          <strong>סיום ומעבר לצעד הבא:</strong> הזמנה חמה לפגישת אפיון והדגמה אישית, עדכון שההקלטה והחומרים יישלחו במייל, עצירת ההקלטה וסגירת השידור.
+        </div>
+      </li>
+    </ul>
+
+    <!-- Section 3: Live message -->
+    <h2 class="section-title">3. מייל "התחלנו!" (לשיגור בשעה 15:00)</h2>
+    <div class="message-box">
+      <div class="message-header">
+        <span>נוסח מייל רגע השידור (live)</span>
+        <span style="font-size:12px; font-weight:normal;">שליחה: רביעי 14.10.2026 ב-15:00</span>
+      </div>
+      <div class="message-body" id="live-msg-body">נושא: התחלנו! כניסה לשידור סמארטבטלר
+שורת פתיחה: השידור החי ב-Google Meet נפתח עכשיו
+
+שלום,
+
+אנחנו באוויר! השידור החי של סמארטבטלר נפתח ממש ברגעים אלה.
+
+לכניסה ישירה לחדר ב-Google Meet:
+{{BROADCAST_LINK}}
+
+כל מנהלי המלונות כבר מתחברים, מתחילים מיד.
+
+יוסי</div>
+      <div class="message-actions">
+        <button class="btn-copy" onclick="copyText('live-msg-body', this)">📋 העתק נוסח הודעה</button>
+      </div>
+    </div>
+
+    <!-- Section 4: Metrics -->
+    <h2 class="section-title">4. טבלת מדדי ביצוע (KPIs) למילוי לאחר השידור</h2>
+    <table class="metrics-table">
+      <thead>
+        <tr>
+          <th>מדד ביצוע</th>
+          <th style="width: 130px;">תוצאה בפועל</th>
+          <th>מקור הנתון</th>
+          <th>יעד מקובל בענף</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>סך כל הנרשמים</strong></td>
+          <td><input type="text" placeholder="הזן כמות"></td>
+          <td>דוח הנרשמים מ-Netlify Forms (קובץ CSV)</td>
+          <td>יעד מוגדר מראש לקמפיין</td>
+        </tr>
+        <tr>
+          <td><strong>נוכחים בשידור החי</strong></td>
+          <td><input type="text" placeholder="הזן כמות"></td>
+          <td>דוח נוכחות Google Meet Attendance</td>
+          <td>35% - 50% מסך הנרשמים</td>
+        </tr>
+        <tr>
+          <td><strong>נשארו עד סוף השידור</strong></td>
+          <td><input type="text" placeholder="הזן כמות"></td>
+          <td>דוח Google Meet (משך צפייה מעל 45 דק')</td>
+          <td>65%+ מהנוכחים</td>
+        </tr>
+        <tr>
+          <td><strong>פגישות הדגמה אישיות</strong></td>
+          <td><input type="text" placeholder="הזן כמות"></td>
+          <td>פניות ישירות ותיאומים מול יוסי רון</td>
+          <td>15% - 25% מהנוכחים בשידור</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Section 5: Follow-up -->
+    <div class="callout">
+      <h4>📬 מעקב ב-24 השעות שלאחר השידור:</h4>
+      <p>שולחים לכלל הנרשמים מייל מסכם הכולל: קישור להקלטת השידור המלאה, קישור להורדת 4 חוברות המוצר של המודולים (LogBook, Housekeeping, Minibar, Room Service), והזמנה ישירה לתיאום פגישת אפיון והדגמה ממוקדת לצוות הניהולי של המלון.</p>
+    </div>
+
+  </main>
+</div>
+
+<script>
+function toggleCheck(cb) {
+  var item = cb.closest('.checklist-item');
+  if (cb.checked) {
+    item.classList.add('checked');
+  } else {
+    item.classList.remove('checked');
+  }
+}
+
+function copyText(elemId, btn) {
+  var text = document.getElementById(elemId).innerText;
+  navigator.clipboard.writeText(text).then(function() {
+    var orig = btn.innerText;
+    btn.innerText = '✅ הועתק בהצלחה!';
+    btn.style.background = '#E8F5E9';
+    btn.style.borderColor = '#4CAF50';
+    btn.style.color = '#2E7D32';
+    setTimeout(function() {
+      btn.innerText = orig;
+      btn.style.background = '';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }, 2500);
+  });
+}
+</script>
+</body>
+</html>
