@@ -19,7 +19,7 @@
 <meta property="og:description" content="שידור חי מיוחד למנכ&quot;לים, מנהלי תפעול, משק, קבלה וחשבים: איך לחבר את לוגבוק, משק בית, מיני בר ושירות חדרים למערכת ענן אחת שמסנכרנת את המלון בזמן אמת.">
 <meta property="og:type" content="website">
 
-
+<meta property="og:url" content="https://smartbutler-webinar-danbar.vercel.app"><link rel="canonical" href="https://smartbutler-webinar-danbar.vercel.app">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -494,8 +494,8 @@ var CONFIG = {
       return;
     }
     if(CONFIG.CAPTURE_ENDPOINT){
-      fetch(CONFIG.CAPTURE_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})
-        .then(function(r){ if(!r.ok) throw new Error(r.status); go(); }).catch(fail);
+      var q=new URLSearchParams(fd); q.append("consent","true"); q.append("slug",CONFIG.SLUG);
+      fetch(CONFIG.CAPTURE_ENDPOINT+"?"+q.toString(),{method:"POST",mode:"no-cors"}).then(go).catch(go);
       return;
     }
     if(CONFIG.FORM_ACTION){
