@@ -328,12 +328,8 @@ h1,h2{font-weight:800}
       <h2>לשמור לך מקום בשידור החי?</h2>
       <p class="sub" style="margin-inline:auto">ההרשמה לוקחת פחות מחצי דקה. מייל האישור עם הקישור ל-Google Meet וזימון ליומן יישלח אליך מיד.</p>
     </div>
-    <!-- Netlify Forms: השדות נקלטים בזכות data-netlify, והשדה form-name הוא מה שמקשר את השליחה לטופס -->
-    <form class="form-card" id="lead-form" novalidate method="POST"
-      name="webinar-register" data-netlify="true"
-      data-netlify-honeypot="company" action="thank-you/">
-      <input type="hidden" name="form-name" value="webinar-register">
     
+    <form class="form-card" id="lead-form" novalidate method="post" action="">
     
       <div class="field">
         <label for="f-name">שם פרטי</label>
@@ -419,9 +415,8 @@ h1,h2{font-weight:800}
 <script>
 var CONFIG = {
   EVENT_DATE: "2026-10-14T15:00:00+03:00",
-  NETLIFY: true,
-  FORM_ACTION: "/",                        /* Netlify Forms: שולחים לכתובת של הדף עצמו */
-  CAPTURE_ENDPOINT: "",
+  FORM_ACTION: "",          /* Google Form (formResponse) או טופס מערכת דיוור */
+  CAPTURE_ENDPOINT: "https://script.google.com/macros/s/AKfycbyK0-kYX3m6CnEGAaGlmWGW-XXnpECDpoT0gMCq8rCdJKxMWPt2ImI3ibhHu0WX69VJ/exec",/* מתקדם: endpoint שמקבל JSON */
   THANK_YOU_URL: location.protocol==="file:" ? "thank-you/index.html" : "thank-you/", /* מקומית (file://) אין index.html ברירת מחדל, אז מפנים לקובץ עצמו */
   SLUG: "smartbutler-hotel-ops"
 };

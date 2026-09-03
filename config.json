@@ -29,7 +29,7 @@
   "broadcast_link": "",
   "page_url": "",
   "netlify_site_id": "",
-  "netlify_form": "webinar-register",
+  "netlify_form": "",
   "form_action": "",
   "form_fields": {
     "name": "name",
@@ -37,11 +37,11 @@
     "email": "email",
     "consent": "consent"
   },
-  "lead_mode": "netlify-forms",
+  "lead_mode": "endpoint",
   "hero_photo": "",
   "host_photo": "",
   "og_image": "",
-  "capture_endpoint": "",
+  "capture_endpoint": "https://script.google.com/macros/s/AKfycbyK0-kYX3m6CnEGAaGlmWGW-XXnpECDpoT0gMCq8rCdJKxMWPt2ImI3ibhHu0WX69VJ/exec",
   "brand": {
     "direction_name": "ג'ייבי רשמי ומדויק",
     "bg": "#0D2838",
